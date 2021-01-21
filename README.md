@@ -25,9 +25,9 @@ The base URL for your backend is: `http://localhost:6001`
 
 These are the endpoints you might need:
 
-- GET: `/transactions`
-- POST: `/transactions`
-- DELETE: `/transactions/:id`
+- GET: `http://localhost:6001/transactions`
+- POST: `http://localhost:6001/transactions`
+- DELETE: `http://localhost:6001/transactions/:id`
 
 ## Core Deliverables
 
