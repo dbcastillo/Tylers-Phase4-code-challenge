@@ -23,34 +23,9 @@ handleChange = (e) => {
 handleSubmit = (e) => {
   e.preventDefault();
 
-  const newTransaction = {
-    date: this.state.date,
-    description: this.state.description,
-    category: this.state.category,
-    amount: this.state.amount
-  }
+  this.props.addTransaction(this.state)
 
-
-  const reqObj = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body:  JSON.stringify(newTransaction)
-  }
-
-  fetch('http://localhost:6001/transactions', reqObj)
-  .then(resp => resp.json())
-  .then(transaction => {
-    this.setState({
-      date: '',
-      description: '',
-      category: '',
-      amount: ''
-    })
-
-    this.props.addTransaction(transaction)
-  })
+  
 
 }
 

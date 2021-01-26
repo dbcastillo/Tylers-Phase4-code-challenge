@@ -10,10 +10,6 @@ class App extends Component {
     super()
     this.state ={
       transactions: [],
-      transaction: {},
-      isTransactionView: false,
-      sortValue: '',
-      inputValue: '',
       searchBar: ''
     }
   }
@@ -45,20 +41,16 @@ class App extends Component {
 //  return console.log(cop)
 // }
 
-filtering = this.state.transactions.filter((transactions) => {
-  if (searchBar === '') {
-       return transactions
-     }
-       else if (transactions.category.toLowerCase() === searchBar ){
-         return transactions
-       }
-       else if (transactions.amount === searchBar ){
-         return transactions
-       }
-       else
-       return transactions.description.toLowerCase().includes(this.state.searchBar)
-  }
-)
+filtering = () => {
+
+  return this.state.transactions.filter((transactions) => {
+    if (this.state.searchBar === '') {
+        return transactions
+      } else {
+        return transactions.description.toLowerCase().includes(this.state.searchBar.toLowerCase())
+    }
+  })
+}
 
 filtered = (e) => {
   this.setState({
@@ -70,22 +62,29 @@ filtered = (e) => {
 
 
   addTransaction = (newTransaction) => {
-    this.setState(prevState => {
-      return {
-        transactions: [...prevState.transactions, newTransaction]
-      }
-    })
+    
+    const reqObj = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newTransaction)
+    }
+  
+    fetch('http://localhost:6001/transactions', reqObj)
+    .then(resp => resp.json())
+    .then(theTransaction => this.setState({transactions: [...this.state.transactions, theTransaction]}))
+    // .then(transaction => {
+    //   this.setState({transactions: [...this.state.transactions, transaction]})
+    // })
+    // this.setState(prevState => {
+    //   {
+    //     transactions: [...prevState.transactions, newTransaction]
+    //   }
+    // })
   }
 
   render() {
-    // const filteredArr = this.state.transactions.filter(transaction => {
-    //   return transaction.description.toLowerCase().includes(this.state.inputValue.toLowerCase())
-    // })
-
-    // const {descriptions, searchField} = this.state
-    // const filtered = descriptions.filter(account => {
-    //   account.description.toLowerCase().includes(searchField.toLowerCase())
-    // })
     return (
       <div className="ui raised segment">
         <div className="ui segment blue inverted">
@@ -93,9 +92,9 @@ filtered = (e) => {
         </div>
         
         {/* <Search transactions={this.filtering(filteredArr)}/> */}
-        <Search />
-        {<AddTransactionForm addTransaction={this.addTransaction}/>}
-        <AccountContainer show={filtering} filter={this.filtered}/>
+        <Search filtered={this.filtered} theSearchBar={this.state.searchBar}/>
+        <AddTransactionForm addTransaction={this.addTransaction}/>
+        <AccountContainer transactions={this.filtering()} />
       </div>
     );
   }
